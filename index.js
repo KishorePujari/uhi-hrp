@@ -15,20 +15,25 @@ try {
 }
 
 app.post("/", (req, resp) => {
+    console.log('/POST');
     resp.status(200).send("HOME via POST"); 
 });
 
 app.get("/", (req, resp) => {
+    console.log('/GET');
     resp.status(200).send("HOME"); 
 });
 
 app.get("/locations", (req, resp) => {
+    console.log('GET /locations');
     resp.status(200).send("Locations"); 
 });
 app.get("/name_search", (req, resp) => {
+    console.log('/name_search');
     resp.status(200).send("Name"); 
 });
 app.get("/specialization", (req, resp) => {
+    console.log('GET /specialization');
     resp.status(200).send("specialization"); 
 });
 app.use( (req,res) => { res.status(404).send("Unknown request"); } )
