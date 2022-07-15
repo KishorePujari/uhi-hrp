@@ -14,10 +14,15 @@ try {
     return;
 }
 
+app.post("/", (req, resp) => {
+    resp.status(200).send("HOME via POST"); 
+});
+
+app.get("/", (req, resp) => {
+    resp.status(200).send("HOME"); 
+});
+
 app.get("/locations", (req, resp) => {
-
-    
-
     resp.status(200).send("Locations"); 
 });
 app.get("/name_search", (req, resp) => {
