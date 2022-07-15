@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const fs = require("fs");
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.urlencoded({ limit: '200mb', extended: true }))
 app.use(bodyParser.json({limit: '200mb'}));
@@ -37,4 +38,4 @@ app.get("/specialization", (req, resp) => {
     resp.status(200).send("specialization"); 
 });
 app.use( (req,res) => { res.status(404).send("Unknown request"); } )
-app.listen(3000, ()=> {console.log('On port 3000');})
+app.listen(port, ()=> {console.log('On port ${port}');})
