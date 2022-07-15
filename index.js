@@ -108,6 +108,7 @@ app.get("/search", (req, resp) => {
                         break;
                     }
                 }
+                location.doctors = doctors;
             }
 
             locations.push(location);
