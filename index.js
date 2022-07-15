@@ -37,4 +37,4 @@ app.get("/specialization", (req, resp) => {
     resp.status(200).send("specialization"); 
 });
 app.use( (req,res) => { res.status(404).send("Unknown request"); } )
-app.listen(443, ()=> {console.log('On port 443');})
+app.listen(3000, ()=> {console.log('On port 3000');})
