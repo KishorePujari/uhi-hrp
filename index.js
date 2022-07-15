@@ -121,6 +121,96 @@ app.get("/search", (req, resp) => {
 
 
 });
+app.post("/search", (req, resp) => {
+    console.log('GET /locations');
+    try {
+
+        const jsonString = fs.readFileSync("./HRPInfo.json");
+        const HRPInfo = JSON.parse(jsonString);
+        let locations = [];
+
+        for (let locationIndex = 0; locationIndex < HRPInfo.Locations.length; locationIndex++) {
+            let location = {};
+
+            location.name = HRPInfo.Locations[locationIndex].name;
+            location.fee = HRPInfo.Locations[locationIndex].fee;
+            location.std = HRPInfo.Locations[locationIndex].std;
+            location.address = HRPInfo.Locations[locationIndex].address;
+            location.country = HRPInfo.Locations[locationIndex].country;
+
+            if (req.body && req.body.locationFlag && req.body.locationFlag == 1) {
+                location.lat = HRPInfo.Locations[locationIndex].lat;
+                location.long = HRPInfo.Locations[locationIndex].long;
+                location.distance = geolib.getDistance({
+                    latitude: req.body.lat,
+                    longitude: req.body.lat
+                }, {
+                    latitude: HRPInfo.Locations[locationIndex].lat,
+                    longitude: HRPInfo.Locations[locationIndex].long
+                });
+            }
+
+            if (req.body && req.body.speciality && req.body.speciality.length > 0) {
+                let doctors = [];
+                for (let specialityIndex = 0; specialityIndex < HRPInfo.Locations[locationIndex].specialities.length; specialityIndex++) {
+                    if (HRPInfo.Locations[locationIndex].specialities[specialityIndex].speciality == req.body.speciality) {
+
+
+                        if (req.body.method == 1) // Teleconsultation
+                        {
+                            for (let docIndex = 0; docIndex < HRPInfo.Locations[locationIndex].specialities[specialityIndex].doctors.length; docIndex++) {
+                                let doctor = {};
+                                let doc = HRPInfo.Locations[locationIndex].specialities[specialityIndex].doctors[docIndex];
+                                if (doc.consulationMethod.indexOf("Teleconsultation") >= 0) {
+                                    doctor.name = doc.name;
+                                    doctor.image = doc.image;
+                                    doctor.rating = doc.rating;
+                                    doctor.method = "Teleconsultation";
+                                    doctors.push(doctor);
+                                }
+                            }
+
+                        } else if (req.body.method == 2) // Physical
+                        {
+                            for (let docIndex = 0; docIndex < HRPInfo.Locations[locationIndex].specialities[specialityIndex].doctors.length; docIndex++) {
+                                let doctor = {};
+                                let doc = HRPInfo.Locations[locationIndex].specialities[specialityIndex].doctors[docIndex];
+                                if (doc.consulationMethod.indexOf("Physical") >= 0) {
+                                    doctor.name = doc.name;
+                                    doctor.image = doc.image;
+                                    doctor.rating = doc.rating;
+                                    doctor.method = "Physical";
+                                    doctors.push(doctor);
+                                }
+                            }
+                        } else //Both
+                        {
+                            for (let docIndex = 0; docIndex < HRPInfo.Locations[locationIndex].specialities[specialityIndex].doctors.length; docIndex++) {
+                                let doctor = {};
+                                let doc = HRPInfo.Locations[locationIndex].specialities[specialityIndex].doctors[docIndex];
+                                doctor.name = doc.name;
+                                doctor.image = doc.image;
+                                doctor.rating = doc.rating;
+                                doctor.method = "Physical and Teleconsultation";
+                                doctors.push(doctor);
+                            }
+                        }
+                        break;
+                    }
+                }
+                location.doctors = doctors;
+            }
+
+            locations.push(location);
+        }
+        resp.status(200).send(locations);
+    } catch (err) {
+        console.log(err);
+        return;
+    }
+
+
+});
 app.get("/name_search", (req, resp) => {
     console.log('/name_search');
     resp.status(200).send("Name");
