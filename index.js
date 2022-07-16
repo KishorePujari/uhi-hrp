@@ -5,6 +5,11 @@ const fs = require("fs");
 const port = process.env.PORT || 3000;
 const geolib = require('geolib');
 
+var cors = require('cors');
+
+
+app.use(cors());
+
 app.use(bodyParser.urlencoded({
     limit: '200mb',
     extended: true
